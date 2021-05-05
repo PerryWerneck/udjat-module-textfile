@@ -21,7 +21,7 @@
  #include <udjat/agent.h>
  #include <udjat/files/sysconfig.h>
  #include <udjat/tools/file.h>
- #include <sysconfig_factory.h>
+ #include <internals.h>
  #include <pugixml.hpp>
 
  using namespace std;
@@ -29,6 +29,17 @@
  namespace Udjat {
 
 	SysConfig::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("sysconfig")) {
+
+		static const Udjat::ModuleInfo info{
+			PACKAGE_NAME,									// The module name.
+			"Sysconfig file parser", 						// The module description.
+			PACKAGE_VERSION, 								// The module version.
+			PACKAGE_URL, 									// The package URL.
+			PACKAGE_BUGREPORT 								// The bugreport address.
+		};
+
+		this->Udjat::Factory::info = &info;
+
 	}
 
 	SysConfig::Factory::~Factory() {

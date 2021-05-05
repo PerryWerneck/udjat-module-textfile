@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include <udjat/module.h>
- #include <sysconfig_factory.h>
+ #include <internals.h>
 
  using namespace Udjat;
  using namespace std;

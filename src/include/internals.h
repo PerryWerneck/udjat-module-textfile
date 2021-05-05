@@ -37,5 +37,41 @@ namespace Udjat {
 
 	}
 
+	namespace TextFile {
+
+		/// @brief Regex value parser
+		class Regex {
+		private:
+			Quark expression;
+
+		protected:
+
+			/// @brief Parse expression, set response to 'true' if found.
+			void parse(const char *contents, bool &response);
+
+			/// @brief Parse expression, set response to 'count' of results.
+			void parse(const char *contents, unsigned int &response);
+
+			/// @brief Parse expression, extract string.
+			void parse(const char *contents, string &response);
+
+		public:
+			Regex(const pugi::xml_node &node);
+			~Regex();
+		};
+
+		class Factory : public Udjat::Factory {
+		private:
+
+		public:
+			Factory();
+			virtual ~Factory();
+
+			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+
+		};
+
+	}
+
 }
 
