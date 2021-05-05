@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config>
+
+	<sysconfig name='backup' filename='/etc/sysconfig/backup' update-on-demand='yes' />
+	<sysconfig name='cpuinfo' filename='/proc/cpuinfo' update-on-demand='yes' />
+	<sysconfig name='cpuname' filename='/proc/cpuinfo' key='model name' update-on-demand='yes' />
+
+</config>

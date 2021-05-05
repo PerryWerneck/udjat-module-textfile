@@ -51,6 +51,9 @@ namespace Udjat {
 			void clear();
 			void setType(const char *name);
 
+			/// @brief Convenience method for agent 'get()' method.
+			void get(const char *name, Json::Value &value) const;
+
 			operator bool() const noexcept {
 				return !value.empty();
 			}
@@ -75,7 +78,7 @@ namespace Udjat {
 
 		public:
 			File();
-			File(const char *filename, const char *separator = "=");
+			File(const char *filename, const char *separator = "\0");
 			File & set(const char *contents);
 
 			Value find(const char *key) const noexcept;

@@ -31,7 +31,15 @@
 	 }
 
 	 SysConfig::File::File(const char *filename, const char *separator) {
-		this->separator = separator[0];
+
+	 	if(separator[0]) {
+			this->separator = separator[0];
+	 	} else if(!strncasecmp(filename,"/proc/",6)) {
+			this->separator = ':';
+	 	} else {
+			this->separator = '=';
+	 	}
+
 		set(Udjat::File::Local(filename).c_str());
 	 }
 
@@ -126,7 +134,7 @@
 
 		return *this;
 
-	 }
+	}
 
  }
 

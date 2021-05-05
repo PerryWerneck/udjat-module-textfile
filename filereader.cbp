@@ -30,10 +30,17 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="`pkg-config --cflags libudjat`" />
 			<Add directory="src/include" />
 		</Compiler>
+		<Linker>
+			<Add option="`pkg-config --libs libudjat`" />
+		</Linker>
 		<Unit filename="src/include/config.h" />
+		<Unit filename="src/include/sysconfig_factory.h" />
 		<Unit filename="src/include/udjat/files/sysconfig.h" />
+		<Unit filename="src/module/init.cc" />
+		<Unit filename="src/module/sysconfig/factory.cc" />
 		<Unit filename="src/module/sysconfig/file.cc" />
 		<Unit filename="src/module/sysconfig/value.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />

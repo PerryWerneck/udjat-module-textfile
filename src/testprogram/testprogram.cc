@@ -31,17 +31,19 @@ int main(int argc, char **argv) {
 
 	setlocale( LC_ALL, "" );
 
-//	auto module = udjat_module_init();
-//	Module::load();
+	auto module = udjat_module_init();
+	Module::load();
 
+	/*
 	{
 		SysConfig::File file("/etc/sysconfig/apache2");
 		cout << "----[" << file["APACHE_ACCESS_LOG"].value << "]----" << endl;
 	}
+	*/
 
 	/*
 	{
-		SysConfig::File file("/proc/cpuinfo");
+		SysConfig::File file("/proc/cpuinfo",":");
 
 		file.forEach([](const SysConfig::Value &value){
 			cout << "[" << value.name << "] = '" << value.value << "'" << endl;
@@ -50,7 +52,6 @@ int main(int argc, char **argv) {
 	}
 	*/
 
-	/*
 	{
 		auto root_agent = Abstract::Agent::set_root(make_shared<Abstract::Agent>("root","System","Application"));
 
@@ -69,8 +70,7 @@ int main(int argc, char **argv) {
 		Udjat::run();
 
 	}
-	*/
 
-//	delete module;
+	delete module;
 	return 0;
 }

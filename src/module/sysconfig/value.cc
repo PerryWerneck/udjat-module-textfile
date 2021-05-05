@@ -59,4 +59,21 @@
 		type = String;
 	}
 
+	void SysConfig::Value::get(const char *name, Json::Value &value) const {
+
+		switch(type) {
+		case Value::Boolean:
+			value[name] = this->value;
+			break;
+
+		case Value::Integer:
+			value[name] = ::atoi(this->value.c_str());
+			break;
+
+		default:
+			value[name] = this->value;
+		}
+
+	}
+
  }
