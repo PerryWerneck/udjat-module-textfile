@@ -62,9 +62,6 @@
 			}
 
 			virtual ~OnDemand() {
-#ifdef DEBUG
-				cout << "***** DESTROYED" << endl;
-#endif // DEBUG
 			}
 
 			void get(const char *name, Json::Value &value) override {
@@ -132,6 +129,7 @@
 		private:
 			Quark key;
 			SysConfig::Value value;
+			bool strict = false;
 
 		protected:
 			void set(const char *contents) override {
@@ -145,10 +143,30 @@
 		public:
 			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(), Udjat::File::Agent(Udjat::Attribute(node,"filename")) {
 				key.set(node,"key");
+				strict = Udjat::Attribute(node,"strict").as_bool(strict);
 				Udjat::Abstract::Agent::load(node);
 			}
 
 			virtual ~Inotify() {
+			}
+
+			std::shared_ptr<Abstract::Agent> find(const char *path, bool required, bool autoins) override {
+
+				std::shared_ptr<Abstract::Agent> rc = Abstract::Agent::find(path,false,false);
+				if(rc) {
+					return rc;
+				}
+
+				if(strchr(path,'/')) {
+					throw system_error(ENOENT,system_category(),"Can't search with '/' on sysconfig files");
+				}
+
+				// Create a value reader.
+				if(!strict) {
+					return make_shared<OnDemand>(Udjat::File::Agent::getName(),path);
+				}
+
+				throw system_error(ENOENT,system_category(),string{"Can't find '"} + path + "' in '" + Udjat::File::Agent::getName() + "'");
 			}
 
 		};

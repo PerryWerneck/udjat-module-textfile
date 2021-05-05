@@ -169,7 +169,7 @@ dnl Output config
 dnl ---------------------------------------------------------------------------
 
 AC_SUBST(BASEDIR,$ac_pwd)
-dnl AC_CONFIG_FILES(Makefile)
+AC_CONFIG_FILES(Makefile)
 
 dnl ---------------------------------------------------------------------------
 dnl Output the generated config.status script.
