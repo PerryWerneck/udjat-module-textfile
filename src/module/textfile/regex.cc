@@ -19,6 +19,7 @@
 
  #include <config.h>
  #include <internals.h>
+ #include <regex.h>
 
  using namespace std;
 
@@ -32,7 +33,25 @@
 
 	void TextFile::Regex::parse(const char *contents, bool &response) {
 
-		throw system_error(ENOTSUP,system_category(),"Parser is incomplete");
+		regex_t re;
+
+		if(regcomp(&re,expression.c_str(),REG_EXTENDED|REG_NEWLINE) != 0) {
+			throw runtime_error(string{"Cant compile expression '"} + expression.c_str() + "'");
+		}
+
+		regmatch_t rm[2];
+		memset(&rm,0,sizeof(rm));
+		int rc = regexec(&re, contents, 2, rm, 0);
+		if(rc == 0) {
+			response = true;
+		} else if(rc == REG_NOMATCH) {
+			response = false;
+		} else {
+			regfree(&re);
+			throw runtime_error(string{"Unexpected return code '"} + to_string(rc) + "' on regexec()");
+		}
+
+		regfree(&re);
 
 	}
 

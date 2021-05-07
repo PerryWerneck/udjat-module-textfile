@@ -53,6 +53,7 @@ int main(int argc, char **argv) {
 	}
 	*/
 
+	/*
 	{
 		const char *text = {"\n\nTEST\n\n"};
 		regex_t re;
@@ -75,8 +76,8 @@ int main(int argc, char **argv) {
 		regfree(&re);
 
 	}
+	*/
 
-	/*
 	{
 		auto root_agent = Abstract::Agent::set_root(make_shared<Abstract::Agent>("root","System","Application"));
 
@@ -96,7 +97,6 @@ int main(int argc, char **argv) {
 		Udjat::run();
 
 	}
-	*/
 
 	delete module;
 	return 0;
