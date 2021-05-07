@@ -18,42 +18,35 @@
  */
 
  #include <config.h>
- #include <udjat/module.h>
  #include <internals.h>
 
- using namespace Udjat;
  using namespace std;
 
- class Module : public Udjat::Module, Udjat::SysConfig::Factory, TextFile::Factory {
- private:
+ namespace Udjat {
 
- public:
+	TextFile::Regex::Regex(const pugi::xml_node &node) : expression(node.attribute("expression")) {
+	}
 
- 	Module() : Udjat::Module(Quark::getFromStatic("filereader")) {
+	TextFile::Regex::~Regex() {
+	}
 
-		static const Udjat::ModuleInfo info{
-			PACKAGE_NAME,									// The module name.
-			"Text file parser", 							// The module description.
-			PACKAGE_VERSION, 								// The module version.
-			PACKAGE_URL, 									// The package URL.
-			PACKAGE_BUGREPORT 								// The bugreport address.
-		};
+	void TextFile::Regex::parse(const char *contents, bool &response) {
 
-		this->Udjat::Module::info = &info;
+		throw system_error(ENOTSUP,system_category(),"Parser is incomplete");
 
- 	};
+	}
 
- 	virtual ~Module() {
- 	}
+	void TextFile::Regex::parse(const char *contents, unsigned int &response) {
 
+		throw system_error(ENOTSUP,system_category(),"Parser is incomplete");
 
- };
+	}
 
- /// @brief Register udjat module.
- Udjat::Module * udjat_module_init() {
-	return new ::Module();
+	void TextFile::Regex::parse(const char *contents, std::string &response) {
+
+		throw system_error(ENOTSUP,system_category(),"Parser is incomplete");
+
+	}
+
  }
 
- bool udjat_module_deinit() {
-	return false;
- }

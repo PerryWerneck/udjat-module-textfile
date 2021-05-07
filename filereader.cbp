@@ -45,6 +45,7 @@
 		<Unit filename="src/module/sysconfig/file.cc" />
 		<Unit filename="src/module/sysconfig/value.cc" />
 		<Unit filename="src/module/textfile/factory.cc" />
+		<Unit filename="src/module/textfile/regex.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

@@ -53,7 +53,7 @@ namespace Udjat {
 			void parse(const char *contents, unsigned int &response);
 
 			/// @brief Parse expression, extract string.
-			void parse(const char *contents, string &response);
+			void parse(const char *contents, std::string &response);
 
 		public:
 			Regex(const pugi::xml_node &node);

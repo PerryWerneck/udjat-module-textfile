@@ -21,6 +21,7 @@
  #include <udjat/module.h>
  #include <udjat/tools/logger.h>
  #include <udjat/files/sysconfig.h>
+ #include <regex>
 
  using namespace std;
  using namespace Udjat;
@@ -52,6 +53,7 @@ int main(int argc, char **argv) {
 	}
 	*/
 
+
 	{
 		auto root_agent = Abstract::Agent::set_root(make_shared<Abstract::Agent>("root","System","Application"));
 
@@ -66,6 +68,7 @@ int main(int argc, char **argv) {
 		cout << "http://localhost:8989/api/1.0/agent/backup" << endl;
 		cout << "http://localhost:8989/api/1.0/agent/cpuinfo" << endl;
 		cout << "http://localhost:8989/api/1.0/agent/cpuname" << endl;
+		cout << "http://localhost:8989/api/1.0/agent/auth_basic" << endl;
 
 		Udjat::run();
 

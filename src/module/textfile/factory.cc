@@ -28,6 +28,35 @@
 
  namespace Udjat {
 
+	/// @brief OnDemand regex parser
+	template <typename T>
+	class OnDemand : public Abstract::Agent, public TextFile::Regex {
+	private:
+
+		Quark filename;
+
+	protected:
+
+		void get(const char *name, Json::Value &value) override {
+
+			auto file = Udjat::File::Local(filename.c_str());
+			T response;
+			this->parse(file.c_str(),response);
+			value[name] = response;
+
+		}
+
+	public:
+		OnDemand(const pugi::xml_node &node) : TextFile::Regex(node) {
+			filename.set(node,"filename");
+			Abstract::Agent::load(node);
+		}
+
+		virtual ~OnDemand() {
+		}
+
+	};
+
 	TextFile::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("textfile")) {
 
 		static const Udjat::ModuleInfo info{
@@ -46,42 +75,6 @@
 	}
 
 	void TextFile::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
-
-		/// @brief OnDemand regex parser
-		template <typename T>
-		class OnDemand : public Abstract::Agent, public TextFile::Regex {
-		private:
-
-			Quark filename;
-
-			void setup(const SysConfig::File &file) {
-				this->label = file.getPath();
-				this->summary = file.getDescription();
-			}
-
-		protected:
-
-			void get(const char *name, Json::Value &value) override {
-
-				auto file = SysConfig::File(filename.c_str());
-				setup(file);
-				T response;
-				this->parse(file.c_str(),response);
-				value[name] = response;
-
-			}
-
-		public:
-			OnDemand(const pugi::xml_node &node) : TextFile::Regex(node) {
-				filename.set(node,"filename");
-				Abstract::Agent::load(node);
-			}
-
-			virtual ~OnDemand() {
-			}
-
-		};
-
 
 		auto expression = Attribute(node,"expression",false);
 
@@ -102,7 +95,7 @@
 
 			} else if(!strcasecmp(type.c_str(),"integer")) {
 
-				parent.insert(make_shared<OnDemand<int>>(node));
+				parent.insert(make_shared<OnDemand<unsigned int>>(node));
 
 			} else if(!strcasecmp(type.c_str(),"string")) {
 
@@ -110,7 +103,7 @@
 
 			} else {
 
-				cerr << node.attribute("name") << "\tCan't create agent of type '" << type << "'" << endl;
+				throw system_error(ENOTSUP,system_category(),string{"Can't create agent of type '"} + type + "'");
 
 			}
 		}
