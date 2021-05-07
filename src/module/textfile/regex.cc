@@ -26,6 +26,17 @@
  namespace Udjat {
 
 	TextFile::Regex::Regex(const pugi::xml_node &node) : expression(node.attribute("expression")) {
+
+		// Test if the expression can be compiled.
+		regex_t re;
+		int rc = regcomp(&re,expression.c_str(),REG_EXTENDED|REG_NEWLINE);
+		if(rc != 0) {
+			char msgbuf[100];
+			regerror(rc, &re, msgbuf, sizeof(msgbuf));
+			throw runtime_error(string{"Cant compile expression '"} + expression.c_str() + "': " + string(msgbuf));
+		}
+		regfree(&re);
+
 	}
 
 	TextFile::Regex::~Regex() {
@@ -35,13 +46,12 @@
 
 		regex_t re;
 
+		// Just in case
 		if(regcomp(&re,expression.c_str(),REG_EXTENDED|REG_NEWLINE) != 0) {
 			throw runtime_error(string{"Cant compile expression '"} + expression.c_str() + "'");
 		}
 
-		regmatch_t rm[2];
-		memset(&rm,0,sizeof(rm));
-		int rc = regexec(&re, contents, 2, rm, 0);
+		int rc = regexec(&re, contents, 0, NULL, 0);
 		if(rc == 0) {
 			response = true;
 		} else if(rc == REG_NOMATCH) {
