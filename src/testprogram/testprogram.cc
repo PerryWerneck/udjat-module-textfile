@@ -53,31 +53,6 @@ int main(int argc, char **argv) {
 	}
 	*/
 
-	/*
-	{
-		const char *text = {"\n\nTEST\n\n"};
-		regex_t re;
-
-		if(regcomp(&re,".*TEXT.*",REG_EXTENDED|REG_NEWLINE) != 0) {
-			throw runtime_error("Can't compile expression");
-		}
-
-		regmatch_t rm[2];
-		memset(&rm,0,sizeof(rm));
-		int rc = regexec(&re, text, 2, rm, 0);
-		if(rc == 0) {
-			cout << "MATCH" << endl;
-		} else if(rc == REG_NOMATCH) {
-			cout << "NO MATCH" << endl;
-		} else {
-			cout << to_string(rc) << endl;
-		}
-
-		regfree(&re);
-
-	}
-	*/
-
 	{
 		auto root_agent = Abstract::Agent::set_root(make_shared<Abstract::Agent>("root","System","Application"));
 

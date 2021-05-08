@@ -65,16 +65,89 @@
 
 	}
 
-	void TextFile::Regex::parse(const char *contents, unsigned int &response) {
+	void TextFile::Regex::parse(const char *contents, std::string &response) {
 
-		throw system_error(ENOTSUP,system_category(),"Parser is incomplete");
+		regex_t re;
+
+		// Just in case
+		if(regcomp(&re,expression.c_str(),REG_EXTENDED|REG_NEWLINE) != 0) {
+			throw runtime_error(string{"Cant compile expression '"} + expression.c_str() + "'");
+		}
+
+		try {
+
+			regmatch_t rm;
+			memset(&rm,0,sizeof(rm));
+			int rc = regexec(&re, contents, 1, &rm, 0);
+
+			if(rc == 0) {
+
+				if(rm.rm_so < 0) {
+					throw runtime_error("Unexpected start point in regex response");
+				}
+
+				response = string( (contents + rm.rm_so), (rm.rm_eo-rm.rm_so) );
+
+			} else if(rc == REG_NOMATCH) {
+
+				response.clear();
+
+			} else {
+
+				throw runtime_error(string{"Unexpected return code '"} + to_string(rc) + "' on regexec()");
+
+			}
+
+		} catch(...) {
+			regfree(&re);
+			throw;
+		}
+
+		regfree(&re);
 
 	}
 
-	void TextFile::Regex::parse(const char *contents, std::string &response) {
+	void TextFile::Regex::parse(const char *contents, unsigned int &response) {
 
-		throw system_error(ENOTSUP,system_category(),"Parser is incomplete");
+		// Reference: https://www.lemoda.net/c/unix-regex/
 
+		regex_t re;
+
+		// Just in case
+		if(regcomp(&re,expression.c_str(),REG_EXTENDED|REG_NEWLINE) != 0) {
+			throw runtime_error(string{"Cant compile expression '"} + expression.c_str() + "'");
+		}
+
+		try {
+
+			response = 0;
+
+			regmatch_t rm;
+			const char *ptr = contents;
+
+			memset(&rm,0,sizeof(rm));
+			int rc = regexec(&re, ptr, 1, &rm, 0);
+
+			while( rc == 0 ) {
+
+				response++;
+
+				ptr += rm.rm_eo;
+				memset(&rm,0,sizeof(rm));
+
+				rc = regexec(&re, ptr, 1, &rm, 0);
+			}
+
+			if(rc != REG_NOMATCH) {
+				throw runtime_error(string{"Unexpected return code "} + to_string(rc));
+			}
+
+		} catch(...) {
+			regfree(&re);
+			throw;
+		}
+
+		regfree(&re);
 	}
 
  }
