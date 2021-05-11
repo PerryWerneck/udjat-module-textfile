@@ -64,10 +64,10 @@ int main(int argc, char **argv) {
 
 		cout << "http://localhost:8989/info/1.0/modules" << endl;
 		cout << "http://localhost:8989/info/1.0/factories" << endl;
-		cout << "http://localhost:8989/api/1.0/agent/backup" << endl;
-		cout << "http://localhost:8989/api/1.0/agent/cpuinfo" << endl;
-		cout << "http://localhost:8989/api/1.0/agent/cpuname" << endl;
-		cout << "http://localhost:8989/api/1.0/agent/auth_basic" << endl;
+
+		for(auto agent : *root_agent) {
+			cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
+		}
 
 		Udjat::run();
 

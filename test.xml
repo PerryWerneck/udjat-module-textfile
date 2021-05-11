@@ -6,4 +6,5 @@
 	<sysconfig name='cpuinfo' filename='/proc/cpuinfo' update-on-demand='yes' />
 	<sysconfig name='cpuname' filename='/proc/cpuinfo' key='model name' update-on-demand='yes' />
 	<textfile name='auth_basic' filename='/etc/sysconfig/apache2' type='bool' expression='.*auth_basic.*' />
+	<textfile name='active' filename='testfile.txt' type='bool' expression='.*active.*' update-on-demand='no' />
 </config>

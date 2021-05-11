@@ -57,6 +57,36 @@
 
 	};
 
+	/// @brief Inotify regex parser.
+	template <typename T>
+	class Inotify : public Agent<T>, public File::Agent, public TextFile::Regex {
+
+	protected:
+
+		void set(const char *contents) override {
+
+			// Override 'set' from File::Agent
+			T value;
+			this->parse(contents,value);
+			Udjat::Agent<T>::set(value);
+
+#ifdef DEBUG
+			cout << "Updated" << endl;
+#endif // DEBUG
+		}
+
+
+	public:
+		Inotify(const pugi::xml_node &node) : File::Agent(node,"filename"), TextFile::Regex(node) {
+
+			Udjat::Agent<T>::load(node);
+		}
+
+		virtual ~Inotify() {
+		}
+
+	};
+
 	TextFile::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("textfile")) {
 
 		static const Udjat::ModuleInfo info{
@@ -106,6 +136,28 @@
 				throw system_error(ENOTSUP,system_category(),string{"Can't create agent of type '"} + type + "'");
 
 			}
+
+		} else {
+
+			// Inotify agent
+			if(!strcasecmp(type.c_str(),"bool")) {
+
+				parent.insert(make_shared<Inotify<bool>>(node));
+
+			} else if(!strcasecmp(type.c_str(),"integer")) {
+
+				parent.insert(make_shared<Inotify<unsigned int>>(node));
+
+			} else if(!strcasecmp(type.c_str(),"string")) {
+
+				parent.insert(make_shared<Inotify<string>>(node));
+
+			} else {
+
+				throw system_error(ENOTSUP,system_category(),string{"Can't create agent of type '"} + type + "'");
+
+			}
+
 		}
 
 	}
