@@ -69,20 +69,25 @@
 			T value;
 			this->parse(contents,value);
 			Udjat::Agent<T>::set(value);
+			Udjat::Agent<T>::updated();
 
 #ifdef DEBUG
-			cout << "Updated" << endl;
+			cout << "Updated value=" << value << endl;
 #endif // DEBUG
+
 		}
 
 
 	public:
 		Inotify(const pugi::xml_node &node) : File::Agent(node,"filename"), TextFile::Regex(node) {
-
 			Udjat::Agent<T>::load(node);
 		}
 
 		virtual ~Inotify() {
+		}
+
+		void refresh() override {
+			File::Agent::update();
 		}
 
 	};

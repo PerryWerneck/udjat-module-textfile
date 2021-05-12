@@ -22,6 +22,7 @@
  #include <udjat/tools/logger.h>
  #include <udjat/files/sysconfig.h>
  #include <regex.h>
+ #include <unistd.h>
 
  using namespace std;
  using namespace Udjat;
@@ -54,25 +55,32 @@ int main(int argc, char **argv) {
 	*/
 
 	{
-		auto root_agent = Abstract::Agent::set_root(make_shared<Abstract::Agent>("root","System","Application"));
-
 		{
 			pugi::xml_document doc;
 			doc.load_file("test.xml");
-			root_agent->load(doc);
+
+			auto root = Abstract::Agent::set_root(make_shared<Abstract::Agent>("root","System","Application"));
+			root->load(doc);
+
+			cout << "http://localhost:8989/info/1.0/modules" << endl;
+			cout << "http://localhost:8989/info/1.0/factories" << endl;
+
+			for(auto agent : *root) {
+				cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
+			}
+
 		}
 
-		cout << "http://localhost:8989/info/1.0/modules" << endl;
-		cout << "http://localhost:8989/info/1.0/factories" << endl;
-
-		for(auto agent : *root_agent) {
-			cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
-		}
 
 		Udjat::run();
 
+		// Force cleanup
+		// Abstract::Agent::set_root(std::shared_ptr<Abstract::Agent>());
+
+
 	}
 
+	cout << "Removing module" << endl;
 	delete module;
 	return 0;
 }

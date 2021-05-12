@@ -174,10 +174,10 @@
 
 				// Create a value reader.
 				if(!strict) {
-					return make_shared<OnDemand>(Udjat::File::Agent::getName(),path);
+					return make_shared<OnDemand>(Udjat::File::Agent::c_str(),path);
 				}
 
-				throw system_error(ENOENT,system_category(),string{"Can't find '"} + path + "' in '" + Udjat::File::Agent::getName() + "'");
+				throw system_error(ENOENT,system_category(),string{"Can't find '"} + path + "' in '" + Udjat::File::Agent::c_str() + "'");
 			}
 
 		};
