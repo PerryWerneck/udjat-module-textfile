@@ -153,7 +153,7 @@ $(BINRLS)/$(PACKAGE_NAME).so: \
 #---[ Install Targets ]------------------------------------------------------------------
 
 install: \
-	install-@OSNAME@-module
+	install-linux-module
 
 install-linux-module: \
 	$(BINRLS)/$(PACKAGE_NAME).so
@@ -168,7 +168,7 @@ install-linux-module: \
 #---[ Uninstall Targets ]----------------------------------------------------------------
 
 uninstall: \
-	uninstall-@OSNAME@-lib
+	uninstall-linux-lib
 
 uninstall-linux-lib:
 
