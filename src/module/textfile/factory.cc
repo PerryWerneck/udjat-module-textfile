@@ -76,8 +76,7 @@
 #endif // DEBUG
 
 		}
-
-
+	
 	public:
 		Inotify(const pugi::xml_node &node) : File::Agent(node,"filename"), TextFile::Regex(node) {
 			Udjat::Agent<T>::load(node);
