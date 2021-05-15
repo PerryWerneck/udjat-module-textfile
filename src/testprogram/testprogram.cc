@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
 	setlocale( LC_ALL, "" );
 
 	auto module = udjat_module_init();
-	Module::load();
+	//Module::load();
 
 	/*
 	{

@@ -24,23 +24,20 @@
  using namespace Udjat;
  using namespace std;
 
+ static const Udjat::ModuleInfo moduleinfo{
+	PACKAGE_NAME,									// The module name.
+	"Text file parser", 							// The module description.
+	PACKAGE_VERSION, 								// The module version.
+	PACKAGE_URL, 									// The package URL.
+	PACKAGE_BUGREPORT 								// The bugreport address.
+ };
+
  class Module : public Udjat::Module, Udjat::SysConfig::Factory, TextFile::Factory {
  private:
 
  public:
 
- 	Module() : Udjat::Module(Quark::getFromStatic("filereader")) {
-
-		static const Udjat::ModuleInfo info{
-			PACKAGE_NAME,									// The module name.
-			"Text file parser", 							// The module description.
-			PACKAGE_VERSION, 								// The module version.
-			PACKAGE_URL, 									// The package URL.
-			PACKAGE_BUGREPORT 								// The bugreport address.
-		};
-
-		this->Udjat::Module::info = &info;
-
+ 	Module() : Udjat::Module(Quark::getFromStatic("filereader"),&moduleinfo) {
  	};
 
  	virtual ~Module() {

@@ -28,18 +28,15 @@
 
  namespace Udjat {
 
-	SysConfig::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("sysconfig")) {
+	static const Udjat::ModuleInfo moduleinfo{
+		PACKAGE_NAME,									// The module name.
+		"Sysconfig file parser", 						// The module description.
+		PACKAGE_VERSION, 								// The module version.
+		PACKAGE_URL, 									// The package URL.
+		PACKAGE_BUGREPORT 								// The bugreport address.
+	};
 
-		static const Udjat::ModuleInfo info{
-			PACKAGE_NAME,									// The module name.
-			"Sysconfig file parser", 						// The module description.
-			PACKAGE_VERSION, 								// The module version.
-			PACKAGE_URL, 									// The package URL.
-			PACKAGE_BUGREPORT 								// The bugreport address.
-		};
-
-		this->Udjat::Factory::info = &info;
-
+	SysConfig::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("sysconfig"),&moduleinfo) {
 	}
 
 	SysConfig::Factory::~Factory() {

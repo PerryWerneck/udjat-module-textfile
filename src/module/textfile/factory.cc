@@ -76,7 +76,7 @@
 #endif // DEBUG
 
 		}
-	
+
 	public:
 		Inotify(const pugi::xml_node &node) : File::Agent(node,"filename"), TextFile::Regex(node) {
 			Udjat::Agent<T>::load(node);
@@ -91,18 +91,15 @@
 
 	};
 
-	TextFile::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("textfile")) {
+	static const Udjat::ModuleInfo moduleinfo{
+		PACKAGE_NAME,									// The module name.
+		"Text file parser", 							// The module description.
+		PACKAGE_VERSION, 								// The module version.
+		PACKAGE_URL, 									// The package URL.
+		PACKAGE_BUGREPORT 								// The bugreport address.
+	};
 
-		static const Udjat::ModuleInfo info{
-			PACKAGE_NAME,									// The module name.
-			"Text file parser", 							// The module description.
-			PACKAGE_VERSION, 								// The module version.
-			PACKAGE_URL, 									// The package URL.
-			PACKAGE_BUGREPORT 								// The bugreport address.
-		};
-
-		this->Udjat::Factory::info = &info;
-
+	TextFile::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("textfile"),&moduleinfo) {
 	}
 
 	TextFile::Factory::~Factory() {
