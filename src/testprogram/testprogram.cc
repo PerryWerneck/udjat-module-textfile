@@ -29,12 +29,24 @@
 
 //---[ Implement ]------------------------------------------------------------------------------------------
 
+static void agent_test() {
+
+	for(auto agent : *Abstract::Agent::init("${PWD}/test.xml")) {
+		cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
+	}
+
+	Udjat::run();
+
+	Abstract::Agent::deinit();
+
+}
+
 int main(int argc, char **argv) {
 
 	setlocale( LC_ALL, "" );
 
+	Module::load("http");
 	auto module = udjat_module_init();
-	//Module::load();
 
 	/*
 	{
@@ -54,33 +66,11 @@ int main(int argc, char **argv) {
 	}
 	*/
 
-	{
-		{
-			pugi::xml_document doc;
-			doc.load_file("test.xml");
-
-			auto root = Abstract::Agent::set_root(make_shared<Abstract::Agent>("root","System","Application"));
-			root->load(doc);
-
-			cout << "http://localhost:8989/info/1.0/modules" << endl;
-			cout << "http://localhost:8989/info/1.0/factories" << endl;
-
-			for(auto agent : *root) {
-				cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
-			}
-
-		}
-
-
-		Udjat::run();
-
-		// Force cleanup
-		// Abstract::Agent::set_root(std::shared_ptr<Abstract::Agent>());
-
-
-	}
+	agent_test();
 
 	cout << "Removing module" << endl;
 	delete module;
+	Module::unload();
+
 	return 0;
 }

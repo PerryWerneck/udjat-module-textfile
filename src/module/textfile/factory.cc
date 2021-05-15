@@ -69,7 +69,6 @@
 			T value;
 			this->parse(contents,value);
 			Udjat::Agent<T>::set(value);
-			Udjat::Agent<T>::updated();
 
 #ifdef DEBUG
 			cout << "Updated value=" << value << endl;
