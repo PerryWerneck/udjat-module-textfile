@@ -51,18 +51,27 @@
 			Quark filename;
 			bool strict = false;
 
+			void setup() {
+				this->icon = "text-x-generic";
+			}
+
 		public:
+
 			OnDemand(const char *filename, const char *key) : Abstract::Agent(key) {
 
 				cout << "Filename: " << filename << " key: " << key << endl;
 
+				setup();
+
 				this->key = key;
 				this->filename = filename;
-				this->label = "TESTE";
 				this->strict = false;
 			}
 
 			OnDemand(const pugi::xml_node &node) {
+
+				setup();
+
 				key.set(node,"key");
 				filename.set(node,"filename",true);
 				strict = Udjat::Attribute(node,"strict").as_bool(strict);
@@ -149,10 +158,15 @@
 			}
 
 		public:
+
 			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(), Udjat::File::Agent(Udjat::Attribute(node,"filename")) {
+
+				this->icon = "text-x-generic";
+
 				key.set(node,"key");
 				strict = Udjat::Attribute(node,"strict").as_bool(strict);
 				Udjat::Abstract::Agent::load(node);
+
 			}
 
 			virtual ~Inotify() {
