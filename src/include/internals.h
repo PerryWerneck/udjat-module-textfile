@@ -20,7 +20,7 @@
 #pragma once
 
 #include <udjat/factory.h>
-#include <udjat/files/sysconfig.h>
+#include <udjat/tools/sysconfig.h>
 
 namespace Udjat {
 

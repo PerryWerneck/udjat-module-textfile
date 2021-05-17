@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include <udjat/agent.h>
- #include <udjat/files/sysconfig.h>
+ #include <udjat/tools/sysconfig.h>
  #include <udjat/tools/file.h>
  #include <internals.h>
  #include <pugixml.hpp>
@@ -30,7 +30,7 @@
 
 	static const Udjat::ModuleInfo moduleinfo{
 		PACKAGE_NAME,									// The module name.
-		"Sysconfig file parser", 						// The module description.
+		"Sysconfig reader agent", 						// The module description.
 		PACKAGE_VERSION, 								// The module version.
 		PACKAGE_URL, 									// The package URL.
 		PACKAGE_BUGREPORT 								// The bugreport address.
@@ -43,6 +43,20 @@
 	}
 
 	void SysConfig::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+
+		/// @brief Agent state.
+		class State : public Udjat::Abstract::State {
+		public:
+			State(const SysConfig::File &file) : Abstract::State(unimportant,"") {
+			}
+
+			State(const Udjat::File::Agent &agent) : Abstract::State(unimportant,"") {
+			}
+
+			virtual ~State() {
+			}
+
+		};
 
 		/// @brief On-demand agent, load file when needed.
 		class OnDemand : public Udjat::Abstract::Agent {
@@ -87,6 +101,10 @@
 
 				this->label = file.getPath();
 				this->summary = file.getDescription();
+
+				if(!(hasStates() || hasChildren())) {
+					Abstract::Agent::activate(make_shared<State>(file));
+				}
 
 				if(!key) {
 
@@ -149,9 +167,14 @@
 			bool strict = false;
 
 		protected:
+				/*
 			void set(const char *contents) override {
-				throw runtime_error("INotify.Sysconfig is not implemented");
+				if(!(hasStates() || hasChildren())) {
+					#error parei aqui.
+					Abstract::Agent::activate(make_shared<State>(file));
+				}
 			}
+				*/
 
 			void refresh() override {
 				throw runtime_error("INotify.Sysconfig is not implemented");

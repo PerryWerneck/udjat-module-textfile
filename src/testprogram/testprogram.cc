@@ -20,7 +20,7 @@
  #include <udjat.h>
  #include <udjat/module.h>
  #include <udjat/tools/logger.h>
- #include <udjat/files/sysconfig.h>
+ #include <udjat/tools/sysconfig.h>
  #include <regex.h>
  #include <unistd.h>
 
