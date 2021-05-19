@@ -99,7 +99,7 @@
 		PACKAGE_BUGREPORT 								// The bugreport address.
 	};
 
-	TextFile::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("textfile"),&moduleinfo) {
+	TextFile::Factory::Factory() : Udjat::Factory("textfile",&moduleinfo) {
 	}
 
 	TextFile::Factory::~Factory() {

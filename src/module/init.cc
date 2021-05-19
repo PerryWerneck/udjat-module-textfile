@@ -37,7 +37,7 @@
 
  public:
 
- 	Module() : Udjat::Module(Quark::getFromStatic("filereader"),&moduleinfo) {
+ 	Module() : Udjat::Module("filereader",&moduleinfo) {
  	};
 
  	virtual ~Module() {

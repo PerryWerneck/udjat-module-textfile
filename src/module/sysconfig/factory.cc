@@ -36,7 +36,7 @@
 		PACKAGE_BUGREPORT 								// The bugreport address.
 	};
 
-	SysConfig::Factory::Factory() : Udjat::Factory(Quark::getFromStatic("sysconfig"),&moduleinfo) {
+	SysConfig::Factory::Factory() : Udjat::Factory("sysconfig",&moduleinfo) {
 	}
 
 	SysConfig::Factory::~Factory() {
@@ -46,15 +46,43 @@
 
 		/// @brief Agent state.
 		class State : public Udjat::Abstract::State {
+		private:
+
+			/*
+			void set(const char *filename) {
+			}
+			*/
+
 		public:
 			State(const SysConfig::File &file) : Abstract::State(unimportant,"") {
+				//set(file.getPath());
 			}
 
 			State(const Udjat::File::Agent &agent) : Abstract::State(unimportant,"") {
+				//set(agent.getPath());
 			}
 
 			virtual ~State() {
 			}
+
+			/*
+			void get(Json::Value &value) const noexcept {
+
+				value["summary"] = "";
+				value["body"] = "";
+				value["uri"] ="";
+
+				time_t activation = getActivationTime();
+				if(activation)
+					value["activation"] = TimeStamp(activation).to_string(TIMESTAMP_FORMAT_JSON);
+				else
+					value["activation"] = activation;
+
+				// Set level information
+				getLevel(value);
+
+			}
+			*/
 
 		};
 
@@ -103,7 +131,10 @@
 				this->summary = file.getDescription();
 
 				if(!(hasStates() || hasChildren())) {
+
+					// No state or child, set the default one.
 					Abstract::Agent::activate(make_shared<State>(file));
+
 				}
 
 				if(!key) {
@@ -160,21 +191,40 @@
 		};
 
 		/// @brief INotify agent, read from file when it changes.
-		class Inotify : public Udjat::Abstract::Agent, Udjat::File::Agent {
+		class Inotify : public Udjat::Abstract::Agent, public Udjat::File::Agent {
 		private:
 			Quark key;
 			SysConfig::Value value;
 			bool strict = false;
 
 		protected:
-				/*
 			void set(const char *contents) override {
+
+				auto file = SysConfig::File();
+
+				file.set(contents);
+
+				this->label = file.getPath();
+				this->summary = file.getDescription();
+
 				if(!(hasStates() || hasChildren())) {
-					#error parei aqui.
-					Abstract::Agent::activate(make_shared<State>(file));
+
+					// No state or child, set the default one.
+					Abstract::Agent::activate(make_shared<State>(*this));
+
 				}
+
+				if(key) {
+
+					// Get key value.
+					this->value = file[key.c_str()];
+					if(!this->value) {
+						throw system_error(ENOENT,system_category(),string{"Can't find key '"} + key.c_str() + "'");
+					}
+
+				}
+
 			}
-				*/
 
 			void refresh() override {
 				throw runtime_error("INotify.Sysconfig is not implemented");
@@ -193,6 +243,10 @@
 			}
 
 			virtual ~Inotify() {
+			}
+
+			void get(const char *name, Json::Value &value) override {
+				this->value.get(name,value);
 			}
 
 			std::shared_ptr<Abstract::Agent> find(const char *path, bool required, bool autoins) override {
