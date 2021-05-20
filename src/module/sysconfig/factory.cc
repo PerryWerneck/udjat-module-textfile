@@ -125,31 +125,30 @@
 
 			void get(const char *name, Json::Value &value) override {
 
-				auto file = SysConfig::File(filename.c_str());
+				try {
+					auto file = SysConfig::File(filename.c_str());
 
-				this->label = file.getPath();
-				this->summary = file.getDescription();
+					this->label = file.getPath();
+					this->summary = file.getDescription();
 
-				if(!(hasStates() || hasChildren())) {
+					if(!(hasStates() || hasChildren())) {
 
-					// No state or child, set the default one.
-					Abstract::Agent::activate(make_shared<State>(file));
+						// No state or child, set the default one.
+						Abstract::Agent::activate(make_shared<State>(file));
 
-				}
-
-				if(!key) {
-
-					// No key! Load them all.
-					Json::Value report(Json::objectValue);
-					for(auto v : file) {
-						v.get(v.name.c_str(),report);
 					}
 
-					value[name] = report;
+					if(!key) {
 
-				} else {
+						// No key! Load them all.
+						Json::Value report(Json::objectValue);
+						for(auto v : file) {
+							v.get(v.name.c_str(),report);
+						}
 
-					try {
+						value[name] = report;
+
+					} else {
 
 						auto v = file[key.c_str()];
 						if(!v) {
@@ -158,15 +157,13 @@
 
 						v.get(name,value);
 
-					} catch(const std::exception &e) {
-
-						error("'{}': {}",filename.c_str(),e.what());
-						throw;
-
 					}
 
-				}
+				} catch(const std::exception &e) {
 
+					failed("Unable to get information", e);
+
+				}
 			}
 
 			std::shared_ptr<Abstract::Agent> find(const char *path, bool required, bool autoins) override {
@@ -200,34 +197,42 @@
 		protected:
 			void set(const char *contents) override {
 
-				auto file = SysConfig::File();
+				try {
 
-				file.set(contents);
+					auto file = SysConfig::File();
 
-				this->label = file.getPath();
-				this->summary = file.getDescription();
+					file.set(contents);
 
-				if(!(hasStates() || hasChildren())) {
+					this->label = file.getPath();
+					this->summary = file.getDescription();
 
-					// No state or child, set the default one.
-					Abstract::Agent::activate(make_shared<State>(*this));
+					if(!(hasStates() || hasChildren())) {
 
-				}
+						// No state or child, set the default one.
+						Abstract::Agent::activate(make_shared<State>(*this));
 
-				if(key) {
-
-					// Get key value.
-					this->value = file[key.c_str()];
-					if(!this->value) {
-						throw system_error(ENOENT,system_category(),string{"Can't find key '"} + key.c_str() + "'");
 					}
+
+					if(key) {
+
+						// Get key value.
+						this->value = file[key.c_str()];
+						if(!this->value) {
+							throw system_error(ENOENT,system_category(),string{"Can't find key '"} + key.c_str() + "'");
+						}
+
+					}
+
+				} catch(const std::exception &e) {
+
+					failed("Error parfile file contents",e);
 
 				}
 
 			}
 
 			void refresh() override {
-				throw runtime_error("INotify.Sysconfig is not implemented");
+				throw system_error(ENOTSUP,system_category(),"Timed update is not available for this agent");
 			}
 
 		public:

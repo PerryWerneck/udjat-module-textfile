@@ -39,10 +39,19 @@
 
 		void get(const char *name, Json::Value &value) override {
 
-			auto file = Udjat::File::Local(filename.c_str());
-			T response;
-			this->parse(file.c_str(),response);
-			value[name] = response;
+			try {
+
+				auto file = Udjat::File::Local(filename.c_str());
+				T response;
+				this->parse(file.c_str(),response);
+				value[name] = response;
+
+			} catch(const std::exception &e) {
+
+				failed("Error acessing file",e);
+				throw;
+
+			}
 
 		}
 
@@ -65,14 +74,22 @@
 
 		void set(const char *contents) override {
 
-			// Override 'set' from File::Agent
-			T value;
-			this->parse(contents,value);
-			Udjat::Agent<T>::set(value);
+			try {
+
+				// Override 'set' from File::Agent
+				T value;
+				this->parse(contents,value);
+				Udjat::Agent<T>::set(value);
 
 #ifdef DEBUG
-			cout << "Updated value=" << value << endl;
+				cout << "Updated value=" << value << endl;
 #endif // DEBUG
+
+			} catch(const std::exception &e) {
+
+				Udjat::Agent<T>::failed("Can't parse file information",e);
+
+			}
 
 		}
 
