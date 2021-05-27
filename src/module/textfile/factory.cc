@@ -41,7 +41,7 @@
 
 			try {
 
-				auto file = Udjat::File::Local(filename.c_str());
+				auto file = Udjat::File::Text(filename.c_str());
 				T response;
 				this->parse(file.c_str(),response);
 				value[name] = response;
