@@ -20,6 +20,7 @@
  #include <config.h>
  #include <udjat/agent.h>
  #include <udjat/tools/file.h>
+ #include <udjat/tools/value.h>
  #include <internals.h>
  #include <pugixml.hpp>
  #include <string>
@@ -37,14 +38,14 @@
 
 	protected:
 
-		void get(const char *name, Json::Value &value) override {
+		Udjat::Value & get(Udjat::Value &value) override {
 
 			try {
 
 				auto file = Udjat::File::Text(filename.c_str());
 				T response;
 				this->parse(file.c_str(),response);
-				value[name] = response;
+				value = response;
 
 			} catch(const std::exception &e) {
 
@@ -52,6 +53,8 @@
 				throw;
 
 			}
+
+			return value;
 
 		}
 

@@ -123,7 +123,7 @@
 			virtual ~OnDemand() {
 			}
 
-			void get(const char *name, Json::Value &value) override {
+			Udjat::Value & get(Udjat::Value &value) override {
 
 				try {
 					auto file = SysConfig::File(filename.c_str());
@@ -141,12 +141,9 @@
 					if(!key) {
 
 						// No key! Load them all.
-						Json::Value report(Json::objectValue);
 						for(auto v : file) {
-							v.get(v.name.c_str(),report);
+							v.get(value[v.name.c_str()]);
 						}
-
-						value[name] = report;
 
 					} else {
 
@@ -155,7 +152,7 @@
 							throw system_error(ENOENT,system_category(),string{"Can't find key '"} + key.c_str() + "'");
 						}
 
-						v.get(name,value);
+						v.get(value);
 
 					}
 
@@ -250,8 +247,8 @@
 			virtual ~Inotify() {
 			}
 
-			void get(const char *name, Json::Value &value) override {
-				this->value.get(name,value);
+			Udjat::Value & get(Udjat::Value &value) override {
+				return this->value.get(value);
 			}
 
 			std::shared_ptr<Abstract::Agent> find(const char *path, bool required, bool autoins) override {

@@ -61,8 +61,7 @@ CFLAGS= \
 	-Isrc/include \
 	-DBUILD_DATE=`date +%Y%m%d` \
 	@UDJAT_CFLAGS@ \
-	@PUGIXML_CFLAGS@ \
-	@JSONCPP_CFLAGS@
+	@PUGIXML_CFLAGS@
 
 LDFLAGS=\
 	@LDFLAGS@
@@ -70,8 +69,7 @@ LDFLAGS=\
 LIBS= \
 	@LIBS@ \
 	@UDJAT_LIBS@ \
-	@PUGIXML_LIBS@ \
-	@JSONCPP_LIBS@
+	@PUGIXML_LIBS@
 
 #---[ Debug Rules ]----------------------------------------------------------------------
 
