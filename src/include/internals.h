@@ -31,7 +31,7 @@ namespace Udjat {
 			Factory();
 			virtual ~Factory();
 
-			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -67,7 +67,7 @@ namespace Udjat {
 			Factory();
 			virtual ~Factory();
 
-			void parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
 
 		};
 

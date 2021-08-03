@@ -42,17 +42,10 @@
 	SysConfig::Factory::~Factory() {
 	}
 
-	void SysConfig::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	bool SysConfig::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
 
 		/// @brief Agent state.
 		class State : public Udjat::Abstract::State {
-		private:
-
-			/*
-			void set(const char *filename) {
-			}
-			*/
-
 		public:
 			State(const SysConfig::File &file) : Abstract::State(unimportant,"") {
 				//set(file.getPath());
@@ -64,25 +57,6 @@
 
 			virtual ~State() {
 			}
-
-			/*
-			void get(Json::Value &value) const noexcept {
-
-				value["summary"] = "";
-				value["body"] = "";
-				value["uri"] ="";
-
-				time_t activation = getActivationTime();
-				if(activation)
-					value["activation"] = TimeStamp(activation).to_string(TIMESTAMP_FORMAT_JSON);
-				else
-					value["activation"] = activation;
-
-				// Set level information
-				getLevel(value);
-
-			}
-			*/
 
 		};
 
@@ -228,7 +202,7 @@
 
 			}
 
-			void refresh() override {
+			bool refresh() override {
 				throw system_error(ENOTSUP,system_category(),"Timed update is not available for this agent");
 			}
 
@@ -284,9 +258,8 @@
 
 		}
 
+		return true;
+
 	}
-
-
-
 
  }

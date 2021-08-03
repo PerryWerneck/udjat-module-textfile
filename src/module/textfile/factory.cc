@@ -105,8 +105,9 @@
 		virtual ~Inotify() {
 		}
 
-		void refresh() override {
+		bool refresh() override {
 			File::Agent::update();
+			return true;
 		}
 
 	};
@@ -125,13 +126,13 @@
 	TextFile::Factory::~Factory() {
 	}
 
-	void TextFile::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	bool TextFile::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
 
 		auto expression = Attribute(node,"expression",false);
 
 		if(!expression) {
 			clog << node.attribute("name").as_string() << "\tExpression attribute is required" << endl;
-			return;
+			return false;
 		}
 
 		// Get agent type.
@@ -181,9 +182,8 @@
 
 		}
 
+		return true;
+
 	}
-
-
-
 
  }
