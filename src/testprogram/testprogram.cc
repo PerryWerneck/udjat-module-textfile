@@ -21,6 +21,7 @@
  #include <udjat/module.h>
  #include <udjat/tools/logger.h>
  #include <udjat/tools/sysconfig.h>
+ #include <udjat/tools/mainloop.h>
  #include <regex.h>
  #include <unistd.h>
 
@@ -35,7 +36,7 @@ static void agent_test() {
 		cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
 	}
 
-	Udjat::run();
+	Udjat::MainLoop::getInstance().run();
 
 	Abstract::Agent::deinit();
 
