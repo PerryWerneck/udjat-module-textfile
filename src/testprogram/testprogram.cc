@@ -17,13 +17,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <udjat.h>
  #include <udjat/module.h>
  #include <udjat/tools/logger.h>
  #include <udjat/tools/sysconfig.h>
  #include <udjat/tools/mainloop.h>
  #include <regex.h>
  #include <unistd.h>
+ #include <udjat/tools/logger.h>
 
  using namespace std;
  using namespace Udjat;
@@ -32,7 +32,7 @@
 
 static void agent_test() {
 
-	for(auto agent : *Abstract::Agent::init("${PWD}/test.xml")) {
+	for(auto agent : * Udjat::init("test.xml")) {
 		cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
 	}
 
@@ -46,7 +46,9 @@ int main(int argc, char **argv) {
 
 	setlocale( LC_ALL, "" );
 
-	Module::load("http");
+	Logger::redirect();
+
+	Module::load("http",false);
 	auto module = udjat_module_init();
 
 	/*
