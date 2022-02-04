@@ -32,8 +32,8 @@
 
 static void agent_test() {
 
-	for(auto agent : * Udjat::init("test.xml")) {
-		cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
+	for(auto agent : * Udjat::load("./test.xml")) {
+		cout << "http://localhost:8989/api/1.0/agent/" << agent->name() << endl;
 	}
 
 	Udjat::MainLoop::getInstance().run();

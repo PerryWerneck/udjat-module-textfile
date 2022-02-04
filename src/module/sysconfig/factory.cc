@@ -47,11 +47,11 @@
 		/// @brief Agent state.
 		class State : public Udjat::Abstract::State {
 		public:
-			State(const SysConfig::File &file) : Abstract::State(unimportant,"") {
+			State(const SysConfig::File &file) : Abstract::State("file",Level::unimportant,"") {
 				//set(file.getPath());
 			}
 
-			State(const Udjat::File::Agent &agent) : Abstract::State(unimportant,"") {
+			State(const Udjat::File::Agent &agent) : Abstract::State("file",unimportant,"") {
 				//set(agent.getPath());
 			}
 
@@ -68,7 +68,7 @@
 			bool strict = false;
 
 			void setup() {
-				this->icon = "text-x-generic";
+				Object::properties.icon = "text-x-generic";
 			}
 
 		public:
@@ -102,8 +102,8 @@
 				try {
 					auto file = SysConfig::File(filename.c_str());
 
-					this->label = file.getPath();
-					this->summary = file.getDescription();
+					Object::properties.label = file.getPath();
+					Object::properties.summary = file.getDescription();
 
 					if(!(hasStates() || hasChildren())) {
 
@@ -174,8 +174,8 @@
 
 					file.set(contents);
 
-					this->label = file.getPath();
-					this->summary = file.getDescription();
+					Object::properties.label = file.getPath();
+					Object::properties.summary = file.getDescription();
 
 					if(!(hasStates() || hasChildren())) {
 
@@ -210,7 +210,7 @@
 
 			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(), Udjat::File::Agent(Udjat::Attribute(node,"filename")) {
 
-				this->icon = "text-x-generic";
+				Object::properties.icon = "text-x-generic";
 
 				key.set(node,"key");
 				strict = Udjat::Attribute(node,"strict").as_bool(strict);

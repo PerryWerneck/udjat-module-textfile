@@ -98,7 +98,7 @@
 
 	public:
 		Inotify(const pugi::xml_node &node) : File::Agent(node,"filename"), TextFile::Regex(node) {
-			this->icon = "text-x-generic";
+			Object::properties.icon = "text-x-generic";
 			Udjat::Agent<T>::load(node);
 		}
 
