@@ -38,7 +38,7 @@
 
 	protected:
 
-		Udjat::Value & get(Udjat::Value &value) override {
+		Udjat::Value & get(Udjat::Value &value) const override {
 
 			try {
 
@@ -49,8 +49,7 @@
 
 			} catch(const std::exception &e) {
 
-				failed("Error acessing file",e);
-				throw;
+				throw runtime_error(string{"Error '"} + e.what() + "' acessing file");
 
 			}
 
@@ -59,7 +58,7 @@
 		}
 
 	public:
-		OnDemand(const pugi::xml_node &node) : TextFile::Regex(node) {
+		OnDemand(const pugi::xml_node &node) : Abstract::Agent(node), TextFile::Regex(node) {
 			filename.set(node,"filename");
 			Abstract::Agent::load(node);
 		}
@@ -97,7 +96,7 @@
 		}
 
 	public:
-		Inotify(const pugi::xml_node &node) : File::Agent(node,"filename"), TextFile::Regex(node) {
+		Inotify(const pugi::xml_node &node) : Udjat::Agent<T>(node), File::Agent(node,"filename"), TextFile::Regex(node) {
 			Object::properties.icon = "text-x-generic";
 			Udjat::Agent<T>::load(node);
 		}

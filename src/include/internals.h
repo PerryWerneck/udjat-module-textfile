@@ -47,13 +47,13 @@ namespace Udjat {
 		protected:
 
 			/// @brief Parse expression, set response to 'true' if found.
-			void parse(const char *contents, bool &response);
+			void parse(const char *contents, bool &response) const;
 
 			/// @brief Parse expression, set response to 'count' of results.
-			void parse(const char *contents, unsigned int &response);
+			void parse(const char *contents, unsigned int &response) const;
 
 			/// @brief Parse expression, extract string.
-			void parse(const char *contents, std::string &response);
+			void parse(const char *contents, std::string &response) const;
 
 		public:
 			Regex(const pugi::xml_node &node);

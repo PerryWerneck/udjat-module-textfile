@@ -84,7 +84,7 @@
 				this->strict = false;
 			}
 
-			OnDemand(const pugi::xml_node &node) {
+			OnDemand(const pugi::xml_node &node) : Abstract::Agent(node) {
 
 				setup();
 
@@ -97,11 +97,13 @@
 			virtual ~OnDemand() {
 			}
 
-			Udjat::Value & get(Udjat::Value &value) override {
+			Udjat::Value & get(Udjat::Value &value) const override {
 
 				try {
+
 					auto file = SysConfig::File(filename.c_str());
 
+					/*
 					Object::properties.label = file.getPath();
 					Object::properties.summary = file.getDescription();
 
@@ -111,6 +113,7 @@
 						Abstract::Agent::activate(make_shared<State>(file));
 
 					}
+					*/
 
 					if(!key) {
 
@@ -132,9 +135,10 @@
 
 				} catch(const std::exception &e) {
 
-					failed("Unable to get information", e);
+					throw runtime_error(string{"Error '"} + e.what() + "' getting value");
 
 				}
+				return value;
 			}
 
 			std::shared_ptr<Abstract::Agent> find(const char *path, bool required, bool autoins) override {
@@ -208,7 +212,7 @@
 
 		public:
 
-			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(), Udjat::File::Agent(Udjat::Attribute(node,"filename")) {
+			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(node), Udjat::File::Agent(Udjat::Attribute(node,"filename")) {
 
 				Object::properties.icon = "text-x-generic";
 
@@ -221,7 +225,7 @@
 			virtual ~Inotify() {
 			}
 
-			Udjat::Value & get(Udjat::Value &value) override {
+			Udjat::Value & get(Udjat::Value &value) const override {
 				return this->value.get(value);
 			}
 
