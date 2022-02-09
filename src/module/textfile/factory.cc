@@ -24,6 +24,7 @@
  #include <internals.h>
  #include <pugixml.hpp>
  #include <string>
+ #include <udjat/moduleinfo.h>
 
  using namespace std;
 
@@ -111,15 +112,9 @@
 
 	};
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,									// The module name.
-		"Text file parser", 							// The module description.
-		PACKAGE_VERSION, 								// The module version.
-		PACKAGE_URL, 									// The package URL.
-		PACKAGE_BUGREPORT 								// The bugreport address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Text file parser"};
 
-	TextFile::Factory::Factory() : Udjat::Factory("textfile",&moduleinfo) {
+	TextFile::Factory::Factory() : Udjat::Factory("textfile",moduleinfo) {
 	}
 
 	TextFile::Factory::~Factory() {

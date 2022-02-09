@@ -23,20 +23,15 @@
  #include <udjat/tools/file.h>
  #include <internals.h>
  #include <pugixml.hpp>
+ #include <udjat/moduleinfo.h>
 
  using namespace std;
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,									// The module name.
-		"Sysconfig reader agent", 						// The module description.
-		PACKAGE_VERSION, 								// The module version.
-		PACKAGE_URL, 									// The package URL.
-		PACKAGE_BUGREPORT 								// The bugreport address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Sysconfig reader agent"};
 
-	SysConfig::Factory::Factory() : Udjat::Factory("sysconfig",&moduleinfo) {
+	SysConfig::Factory::Factory() : Udjat::Factory("sysconfig",moduleinfo) {
 	}
 
 	SysConfig::Factory::~Factory() {
