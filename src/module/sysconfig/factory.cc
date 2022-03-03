@@ -37,7 +37,7 @@
 	SysConfig::Factory::~Factory() {
 	}
 
-	bool SysConfig::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	std::shared_ptr<Abstract::Agent> SysConfig::Factory::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const {
 
 		/// @brief Agent state.
 		class State : public Udjat::Abstract::State {
@@ -176,12 +176,14 @@
 					Object::properties.label = file.getPath();
 					Object::properties.summary = file.getDescription();
 
+					/*
 					if(!(hasStates() || hasChildren())) {
 
 						// No state or child, set the default one.
 						Abstract::Agent::activate(make_shared<State>(*this));
 
 					}
+					*/
 
 					if(key) {
 
@@ -195,7 +197,7 @@
 
 				} catch(const std::exception &e) {
 
-					failed("Error parfile file contents",e);
+					failed("Error parsing ile file contents",e);
 
 				}
 
@@ -248,16 +250,16 @@
 		if(Udjat::Attribute(node,"update-on-demand").as_bool(true)) {
 
 			// On-demand agent.
-			parent.insert(make_shared<OnDemand>(node));
+			return make_shared<OnDemand>(node);
 
 		} else {
 
 			// INotify agent.
-			parent.insert(make_shared<Inotify>(node));
+			return make_shared<Inotify>(node);
 
 		}
 
-		return true;
+		return std::shared_ptr<Abstract::Agent>();
 
 	}
 

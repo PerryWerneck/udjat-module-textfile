@@ -120,13 +120,13 @@
 	TextFile::Factory::~Factory() {
 	}
 
-	bool TextFile::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	std::shared_ptr<Abstract::Agent> TextFile::Factory::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node) const {
 
 		auto expression = Attribute(node,"expression",false);
 
 		if(!expression) {
 			clog << node.attribute("name").as_string() << "\tExpression attribute is required" << endl;
-			return false;
+			return std::shared_ptr<Abstract::Agent>();
 		}
 
 		// Get agent type.
@@ -137,15 +137,15 @@
 			// On Demand Agent
 			if(!strcasecmp(type.c_str(),"bool")) {
 
-				parent.insert(make_shared<OnDemand<bool>>(node));
+				return make_shared<OnDemand<bool>>(node);
 
 			} else if(!strcasecmp(type.c_str(),"integer")) {
 
-				parent.insert(make_shared<OnDemand<unsigned int>>(node));
+				return make_shared<OnDemand<unsigned int>>(node);
 
 			} else if(!strcasecmp(type.c_str(),"string")) {
 
-				parent.insert(make_shared<OnDemand<string>>(node));
+				return make_shared<OnDemand<string>>(node);
 
 			} else {
 
@@ -158,15 +158,15 @@
 			// Inotify agent
 			if(!strcasecmp(type.c_str(),"bool")) {
 
-				parent.insert(make_shared<Inotify<bool>>(node));
+				return make_shared<Inotify<bool>>(node);
 
 			} else if(!strcasecmp(type.c_str(),"integer")) {
 
-				parent.insert(make_shared<Inotify<unsigned int>>(node));
+				return make_shared<Inotify<unsigned int>>(node);
 
 			} else if(!strcasecmp(type.c_str(),"string")) {
 
-				parent.insert(make_shared<Inotify<string>>(node));
+				return make_shared<Inotify<string>>(node);
 
 			} else {
 
@@ -176,7 +176,7 @@
 
 		}
 
-		return true;
+		return std::shared_ptr<Abstract::Agent>();
 
 	}
 

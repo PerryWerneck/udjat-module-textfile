@@ -31,7 +31,7 @@ namespace Udjat {
 			Factory();
 			virtual ~Factory();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 
@@ -67,7 +67,7 @@ namespace Udjat {
 			Factory();
 			virtual ~Factory();
 
-			bool parse(Abstract::Agent &parent, const pugi::xml_node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const override;
 
 		};
 

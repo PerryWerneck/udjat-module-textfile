@@ -32,7 +32,7 @@
 
 static void agent_test() {
 
-	Udjat::load("./test.xml");
+	Udjat::reconfigure("./test.xml");
 	for(auto agent : * Abstract::Agent::root()) {
 		cout << "http://localhost:8989/api/1.0/agent/" << agent->name() << endl;
 	}
