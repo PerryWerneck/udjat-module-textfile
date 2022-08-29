@@ -252,14 +252,10 @@
 			// On-demand agent.
 			return make_shared<OnDemand>(node);
 
-		} else {
-
-			// INotify agent.
-			return make_shared<Inotify>(node);
-
 		}
 
-		return std::shared_ptr<Abstract::Agent>();
+		// INotify agent.
+		return make_shared<Inotify>(node);
 
 	}
 
