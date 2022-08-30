@@ -86,7 +86,6 @@
 				key.set(node,"key");
 				filename.set(node,"filename",true);
 				strict = Udjat::Attribute(node,"strict").as_bool(strict);
-				Udjat::Abstract::Agent::load(node);
 			}
 
 			virtual ~OnDemand() {
@@ -215,7 +214,6 @@
 
 				key.set(node,"key");
 				strict = Udjat::Attribute(node,"strict").as_bool(strict);
-				Udjat::Abstract::Agent::load(node);
 
 			}
 

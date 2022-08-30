@@ -61,7 +61,6 @@
 	public:
 		OnDemand(const pugi::xml_node &node) : Abstract::Agent(node), TextFile::Regex(node) {
 			filename.set(node,"filename");
-			Abstract::Agent::load(node);
 		}
 
 		virtual ~OnDemand() {
@@ -99,7 +98,6 @@
 	public:
 		Inotify(const pugi::xml_node &node) : Udjat::Agent<T>(node), File::Agent(node,"filename"), TextFile::Regex(node) {
 			Object::properties.icon = "text-x-generic";
-			Udjat::Agent<T>::load(node);
 		}
 
 		virtual ~Inotify() {
