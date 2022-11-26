@@ -42,7 +42,7 @@
 	TextFile::Regex::~Regex() {
 	}
 
-	void TextFile::Regex::parse(const char *contents, bool &response) {
+	void TextFile::Regex::parse(const char *contents, bool &response) const {
 
 		regex_t re;
 
@@ -65,7 +65,7 @@
 
 	}
 
-	void TextFile::Regex::parse(const char *contents, std::string &response) {
+	void TextFile::Regex::parse(const char *contents, std::string &response) const {
 
 		regex_t re;
 
@@ -107,7 +107,7 @@
 
 	}
 
-	void TextFile::Regex::parse(const char *contents, unsigned int &response) {
+	void TextFile::Regex::parse(const char *contents, unsigned int &response) const {
 
 		// Reference: https://www.lemoda.net/c/unix-regex/
 

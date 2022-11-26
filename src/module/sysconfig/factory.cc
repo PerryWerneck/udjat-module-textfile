@@ -23,35 +23,30 @@
  #include <udjat/tools/file.h>
  #include <internals.h>
  #include <pugixml.hpp>
+ #include <udjat/moduleinfo.h>
 
  using namespace std;
 
  namespace Udjat {
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,									// The module name.
-		"Sysconfig reader agent", 						// The module description.
-		PACKAGE_VERSION, 								// The module version.
-		PACKAGE_URL, 									// The package URL.
-		PACKAGE_BUGREPORT 								// The bugreport address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Sysconfig reader agent"};
 
-	SysConfig::Factory::Factory() : Udjat::Factory("sysconfig",&moduleinfo) {
+	SysConfig::Factory::Factory() : Udjat::Factory("sysconfig",moduleinfo) {
 	}
 
 	SysConfig::Factory::~Factory() {
 	}
 
-	bool SysConfig::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	std::shared_ptr<Abstract::Agent> SysConfig::Factory::AgentFactory(const Abstract::Object &parent, const pugi::xml_node &node) const {
 
 		/// @brief Agent state.
 		class State : public Udjat::Abstract::State {
 		public:
-			State(const SysConfig::File &file) : Abstract::State(unimportant,"") {
+			State(const SysConfig::File &file) : Abstract::State("file",Level::unimportant,"") {
 				//set(file.getPath());
 			}
 
-			State(const Udjat::File::Agent &agent) : Abstract::State(unimportant,"") {
+			State(const Udjat::File::Agent &agent) : Abstract::State("file",unimportant,"") {
 				//set(agent.getPath());
 			}
 
@@ -68,7 +63,7 @@
 			bool strict = false;
 
 			void setup() {
-				this->icon = "text-x-generic";
+				Object::properties.icon = "text-x-generic";
 			}
 
 		public:
@@ -84,26 +79,27 @@
 				this->strict = false;
 			}
 
-			OnDemand(const pugi::xml_node &node) {
+			OnDemand(const pugi::xml_node &node) : Abstract::Agent(node) {
 
 				setup();
 
 				key.set(node,"key");
 				filename.set(node,"filename",true);
 				strict = Udjat::Attribute(node,"strict").as_bool(strict);
-				Udjat::Abstract::Agent::load(node);
 			}
 
 			virtual ~OnDemand() {
 			}
 
-			Udjat::Value & get(Udjat::Value &value) override {
+			Udjat::Value & get(Udjat::Value &value) const override {
 
 				try {
+
 					auto file = SysConfig::File(filename.c_str());
 
-					this->label = file.getPath();
-					this->summary = file.getDescription();
+					/*
+					Object::properties.label = file.getPath();
+					Object::properties.summary = file.getDescription();
 
 					if(!(hasStates() || hasChildren())) {
 
@@ -111,6 +107,7 @@
 						Abstract::Agent::activate(make_shared<State>(file));
 
 					}
+					*/
 
 					if(!key) {
 
@@ -132,9 +129,10 @@
 
 				} catch(const std::exception &e) {
 
-					failed("Unable to get information", e);
+					throw runtime_error(string{"Error '"} + e.what() + "' getting value");
 
 				}
+				return value;
 			}
 
 			std::shared_ptr<Abstract::Agent> find(const char *path, bool required, bool autoins) override {
@@ -174,15 +172,17 @@
 
 					file.set(contents);
 
-					this->label = file.getPath();
-					this->summary = file.getDescription();
+					Object::properties.label = file.getPath();
+					Object::properties.summary = file.getDescription();
 
+					/*
 					if(!(hasStates() || hasChildren())) {
 
 						// No state or child, set the default one.
 						Abstract::Agent::activate(make_shared<State>(*this));
 
 					}
+					*/
 
 					if(key) {
 
@@ -196,7 +196,7 @@
 
 				} catch(const std::exception &e) {
 
-					failed("Error parfile file contents",e);
+					failed("Error parsing ile file contents",e);
 
 				}
 
@@ -208,20 +208,19 @@
 
 		public:
 
-			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(), Udjat::File::Agent(Udjat::Attribute(node,"filename")) {
+			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(node), Udjat::File::Agent(Udjat::Attribute(node,"filename")) {
 
-				this->icon = "text-x-generic";
+				Object::properties.icon = "text-x-generic";
 
 				key.set(node,"key");
 				strict = Udjat::Attribute(node,"strict").as_bool(strict);
-				Udjat::Abstract::Agent::load(node);
 
 			}
 
 			virtual ~Inotify() {
 			}
 
-			Udjat::Value & get(Udjat::Value &value) override {
+			Udjat::Value & get(Udjat::Value &value) const override {
 				return this->value.get(value);
 			}
 
@@ -249,16 +248,12 @@
 		if(Udjat::Attribute(node,"update-on-demand").as_bool(true)) {
 
 			// On-demand agent.
-			parent.insert(make_shared<OnDemand>(node));
-
-		} else {
-
-			// INotify agent.
-			parent.insert(make_shared<Inotify>(node));
+			return make_shared<OnDemand>(node);
 
 		}
 
-		return true;
+		// INotify agent.
+		return make_shared<Inotify>(node);
 
 	}
 

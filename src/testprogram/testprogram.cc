@@ -17,63 +17,71 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <config.h>
+
+ #include <udjat/tools/systemservice.h>
+ #include <udjat/tools/application.h>
+ #include <udjat/tools/http/client.h>
+ #include <udjat/agent.h>
+ #include <udjat/factory.h>
  #include <udjat/module.h>
- #include <udjat/tools/logger.h>
- #include <udjat/tools/sysconfig.h>
- #include <udjat/tools/mainloop.h>
- #include <regex.h>
- #include <unistd.h>
- #include <udjat/tools/logger.h>
+ #include <iostream>
+ #include <memory>
 
  using namespace std;
  using namespace Udjat;
 
 //---[ Implement ]------------------------------------------------------------------------------------------
 
-static void agent_test() {
-
-	for(auto agent : * Udjat::init("test.xml")) {
-		cout << "http://localhost:8989/api/1.0/agent/" << agent->getName() << endl;
-	}
-
-	Udjat::MainLoop::getInstance().run();
-
-	Abstract::Agent::deinit();
-
-}
-
 int main(int argc, char **argv) {
 
-	setlocale( LC_ALL, "" );
+	class Service : public SystemService {
+	protected:
+		/// @brief Initialize service.
+		void init() override {
 
-	Logger::redirect();
+			udjat_module_init();
 
-	Module::load("http",false);
-	auto module = udjat_module_init();
+			SystemService::init();
 
-	/*
-	{
-		SysConfig::File file("/etc/sysconfig/apache2");
-		cout << "----[" << file["APACHE_ACCESS_LOG"].value << "]----" << endl;
-	}
-	*/
+			if(Module::find("httpd")) {
 
-	/*
-	{
-		SysConfig::File file("/proc/cpuinfo",":");
+				if(Module::find("information")) {
+					cout << "http://localhost:8989/api/1.0/info/modules.xml" << endl;
+					cout << "http://localhost:8989/api/1.0/info/workers.xml" << endl;
+					cout << "http://localhost:8989/api/1.0/info/factories.xml" << endl;
+					cout << "http://localhost:8989/api/1.0/info/services.xml" << endl;
+				}
 
-		file.forEach([](const SysConfig::Value &value){
-			cout << "[" << value.name << "] = '" << value.value << "'" << endl;
-		});
+			}
 
-	}
-	*/
+			auto root = Abstract::Agent::root();
+			if(root) {
+				for(auto agent : *root) {
+					cout << "http://localhost:8989/api/1.0/agent/" << agent->name() << ".xml" << endl;
+				}
+			}
 
-	agent_test();
 
-	cout << "Removing module" << endl;
-	delete module;
-	Module::unload();
+		}
+
+		/// @brief Deinitialize service.
+		void deinit() override {
+			cout << Application::Name() << "\t**** Deinitializing" << endl;
+			Udjat::Module::unload();
+		}
+
+	public:
+		Service() : SystemService{"./test.xml"} {
+		}
+
+
+	};
+
+	Service().run(argc,argv);
+
+	cout << "*** Test program finished" << endl;
 
 	return 0;
+
 }

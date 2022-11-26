@@ -20,24 +20,19 @@
  #include <config.h>
  #include <udjat/module.h>
  #include <internals.h>
+ #include <udjat/moduleinfo.h>
 
  using namespace Udjat;
  using namespace std;
 
- static const Udjat::ModuleInfo moduleinfo{
-	PACKAGE_NAME,									// The module name.
-	"Text file parser", 							// The module description.
-	PACKAGE_VERSION, 								// The module version.
-	PACKAGE_URL, 									// The package URL.
-	PACKAGE_BUGREPORT 								// The bugreport address.
- };
+ static const Udjat::ModuleInfo moduleinfo{"Text file parser"};
 
  class Module : public Udjat::Module, Udjat::SysConfig::Factory, TextFile::Factory {
  private:
 
  public:
 
- 	Module() : Udjat::Module("filereader",&moduleinfo) {
+ 	Module() : Udjat::Module("filereader",moduleinfo) {
  	};
 
  	virtual ~Module() {

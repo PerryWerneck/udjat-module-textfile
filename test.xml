@@ -2,6 +2,9 @@
 
 <config>
 
+	<module name='civetweb' required='no' />
+	<module name='information' required='no' />
+
 	<sysconfig name='backup' filename='/etc/sysconfig/backup' update-on-demand='yes' />
 	<sysconfig name='cpuinfo' filename='/proc/cpuinfo' update-on-demand='yes' />
 	<sysconfig name='cpuname' filename='/proc/cpuinfo' key='model name' update-on-demand='yes' />

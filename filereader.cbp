@@ -42,8 +42,6 @@
 		<Unit filename="src/include/udjat/files/sysconfig.h" />
 		<Unit filename="src/module/init.cc" />
 		<Unit filename="src/module/sysconfig/factory.cc" />
-		<Unit filename="src/module/sysconfig/file.cc" />
-		<Unit filename="src/module/sysconfig/value.cc" />
 		<Unit filename="src/module/textfile/factory.cc" />
 		<Unit filename="src/module/textfile/regex.cc" />
 		<Unit filename="src/testprogram/testprogram.cc" />

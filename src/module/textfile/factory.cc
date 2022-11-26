@@ -24,6 +24,7 @@
  #include <internals.h>
  #include <pugixml.hpp>
  #include <string>
+ #include <udjat/moduleinfo.h>
 
  using namespace std;
 
@@ -38,7 +39,7 @@
 
 	protected:
 
-		Udjat::Value & get(Udjat::Value &value) override {
+		Udjat::Value & get(Udjat::Value &value) const override {
 
 			try {
 
@@ -49,8 +50,7 @@
 
 			} catch(const std::exception &e) {
 
-				failed("Error acessing file",e);
-				throw;
+				throw runtime_error(string{"Error '"} + e.what() + "' acessing file");
 
 			}
 
@@ -59,9 +59,8 @@
 		}
 
 	public:
-		OnDemand(const pugi::xml_node &node) : TextFile::Regex(node) {
+		OnDemand(const pugi::xml_node &node) : Abstract::Agent(node), TextFile::Regex(node) {
 			filename.set(node,"filename");
-			Abstract::Agent::load(node);
 		}
 
 		virtual ~OnDemand() {
@@ -97,9 +96,8 @@
 		}
 
 	public:
-		Inotify(const pugi::xml_node &node) : File::Agent(node,"filename"), TextFile::Regex(node) {
-			this->icon = "text-x-generic";
-			Udjat::Agent<T>::load(node);
+		Inotify(const pugi::xml_node &node) : Udjat::Agent<T>(node), File::Agent(node,"filename"), TextFile::Regex(node) {
+			Object::properties.icon = "text-x-generic";
 		}
 
 		virtual ~Inotify() {
@@ -112,27 +110,21 @@
 
 	};
 
-	static const Udjat::ModuleInfo moduleinfo{
-		PACKAGE_NAME,									// The module name.
-		"Text file parser", 							// The module description.
-		PACKAGE_VERSION, 								// The module version.
-		PACKAGE_URL, 									// The package URL.
-		PACKAGE_BUGREPORT 								// The bugreport address.
-	};
+	static const Udjat::ModuleInfo moduleinfo{"Text file parser"};
 
-	TextFile::Factory::Factory() : Udjat::Factory("textfile",&moduleinfo) {
+	TextFile::Factory::Factory() : Udjat::Factory("textfile",moduleinfo) {
 	}
 
 	TextFile::Factory::~Factory() {
 	}
 
-	bool TextFile::Factory::parse(Abstract::Agent &parent, const pugi::xml_node &node) const {
+	std::shared_ptr<Abstract::Agent> TextFile::Factory::AgentFactory(const Abstract::Object UDJAT_UNUSED(&parent), const pugi::xml_node &node) const {
 
 		auto expression = Attribute(node,"expression",false);
 
 		if(!expression) {
 			clog << node.attribute("name").as_string() << "\tExpression attribute is required" << endl;
-			return false;
+			return std::shared_ptr<Abstract::Agent>();
 		}
 
 		// Get agent type.
@@ -143,15 +135,15 @@
 			// On Demand Agent
 			if(!strcasecmp(type.c_str(),"bool")) {
 
-				parent.insert(make_shared<OnDemand<bool>>(node));
+				return make_shared<OnDemand<bool>>(node);
 
 			} else if(!strcasecmp(type.c_str(),"integer")) {
 
-				parent.insert(make_shared<OnDemand<unsigned int>>(node));
+				return make_shared<OnDemand<unsigned int>>(node);
 
 			} else if(!strcasecmp(type.c_str(),"string")) {
 
-				parent.insert(make_shared<OnDemand<string>>(node));
+				return make_shared<OnDemand<string>>(node);
 
 			} else {
 
@@ -164,15 +156,15 @@
 			// Inotify agent
 			if(!strcasecmp(type.c_str(),"bool")) {
 
-				parent.insert(make_shared<Inotify<bool>>(node));
+				return make_shared<Inotify<bool>>(node);
 
 			} else if(!strcasecmp(type.c_str(),"integer")) {
 
-				parent.insert(make_shared<Inotify<unsigned int>>(node));
+				return make_shared<Inotify<unsigned int>>(node);
 
 			} else if(!strcasecmp(type.c_str(),"string")) {
 
-				parent.insert(make_shared<Inotify<string>>(node));
+				return make_shared<Inotify<string>>(node);
 
 			} else {
 
@@ -182,7 +174,7 @@
 
 		}
 
-		return true;
+		return std::shared_ptr<Abstract::Agent>();
 
 	}
 
