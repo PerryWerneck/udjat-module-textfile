@@ -25,6 +25,7 @@
  #include <pugixml.hpp>
  #include <string>
  #include <udjat/moduleinfo.h>
+ #include <iostream>
 
  using namespace std;
 
