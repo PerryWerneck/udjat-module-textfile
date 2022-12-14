@@ -24,6 +24,7 @@
  #include <internals.h>
  #include <pugixml.hpp>
  #include <udjat/moduleinfo.h>
+ #include <iostream>
 
  using namespace std;
 
