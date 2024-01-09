@@ -18,70 +18,28 @@
  */
 
  #include <config.h>
-
- #include <udjat/tools/systemservice.h>
+ #include <udjat/tools/logger.h>
  #include <udjat/tools/application.h>
- #include <udjat/tools/http/client.h>
- #include <udjat/agent.h>
- #include <udjat/factory.h>
+ #include <udjat/moduleinfo.h>
  #include <udjat/module.h>
- #include <iostream>
- #include <memory>
+ #include <udjat/tools/logger.h>
+ #include <udjat/factory.h>
 
  using namespace std;
  using namespace Udjat;
 
 //---[ Implement ]------------------------------------------------------------------------------------------
 
-int main(int argc, char **argv) {
+ int main(int argc, char **argv) {
 
-	class Service : public SystemService {
-	protected:
-		/// @brief Initialize service.
-		void init() override {
+ 	Logger::verbosity(9);
+	Logger::redirect();
 
-			udjat_module_init();
+ 	udjat_module_init();
+	auto rc = Application{}.run(argc,argv,"./test.xml");
 
-			SystemService::init();
+	debug("Application exits with rc=",rc);
 
-			if(Module::find("httpd")) {
+	return rc;
 
-				if(Module::find("information")) {
-					cout << "http://localhost:8989/api/1.0/info/modules.xml" << endl;
-					cout << "http://localhost:8989/api/1.0/info/workers.xml" << endl;
-					cout << "http://localhost:8989/api/1.0/info/factories.xml" << endl;
-					cout << "http://localhost:8989/api/1.0/info/services.xml" << endl;
-				}
-
-			}
-
-			auto root = Abstract::Agent::root();
-			if(root) {
-				for(auto agent : *root) {
-					cout << "http://localhost:8989/api/1.0/agent/" << agent->name() << ".xml" << endl;
-				}
-			}
-
-
-		}
-
-		/// @brief Deinitialize service.
-		void deinit() override {
-			cout << Application::Name() << "\t**** Deinitializing" << endl;
-			Udjat::Module::unload();
-		}
-
-	public:
-		Service() : SystemService{"./test.xml"} {
-		}
-
-
-	};
-
-	Service().run(argc,argv);
-
-	cout << "*** Test program finished" << endl;
-
-	return 0;
-
-}
+ }
