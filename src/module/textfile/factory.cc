@@ -21,6 +21,7 @@
  #include <udjat/agent.h>
  #include <udjat/tools/file.h>
  #include <udjat/tools/value.h>
+ #include <udjat/tools/file/watcher.h>
  #include <internals.h>
  #include <pugixml.hpp>
  #include <string>
@@ -71,17 +72,15 @@
 
 	/// @brief Inotify regex parser.
 	template <typename T>
-	class Inotify : public Agent<T>, public File::Agent, public TextFile::Regex {
-
+	class Inotify : public Agent<T>, public File::Watcher, public TextFile::Regex {
 	protected:
 
-		void set(const char *contents) override {
+		void updated(const File::Watcher::Event, const char *) override {
 
 			try {
 
-				// Override 'set' from File::Agent
 				T value;
-				this->parse(contents,value);
+				this->parse(Udjat::File::Text{File::Watcher::pathname}.c_str(),value);
 				Udjat::Agent<T>::set(value);
 
 #ifdef DEBUG
@@ -97,16 +96,11 @@
 		}
 
 	public:
-		Inotify(const pugi::xml_node &node) : Udjat::Agent<T>(node), File::Agent(node,"filename"), TextFile::Regex(node) {
+		Inotify(const pugi::xml_node &node) : Udjat::Agent<T>(node), File::Watcher(node,"filename"), TextFile::Regex(node) {
 			Object::properties.icon = "text-x-generic";
 		}
 
 		virtual ~Inotify() {
-		}
-
-		bool refresh() override {
-			File::Agent::update();
-			return true;
 		}
 
 	};

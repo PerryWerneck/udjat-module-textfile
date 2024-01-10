@@ -5,6 +5,7 @@ PACKAGE_NAME=@PACKAGE_NAME@
 
 MAIN_SOURCES= \
 	$(wildcard src/module/*.cc) \
+	$(wildcard src/module/library/*.cc) \
 	$(wildcard src/module/sysconfig/*.cc) \
 	$(wildcard src/module/textfile/*.cc)
 

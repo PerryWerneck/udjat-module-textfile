@@ -21,6 +21,7 @@
  #include <udjat/agent.h>
  #include <udjat/tools/sysconfig.h>
  #include <udjat/tools/file.h>
+ #include <udjat/tools/file/watcher.h>
  #include <internals.h>
  #include <pugixml.hpp>
  #include <udjat/moduleinfo.h>
@@ -158,20 +159,19 @@
 		};
 
 		/// @brief INotify agent, read from file when it changes.
-		class Inotify : public Udjat::Abstract::Agent, public Udjat::File::Agent {
+		class Inotify : public Udjat::Abstract::Agent, public Udjat::File::Watcher {
 		private:
 			Quark key;
 			SysConfig::Value value;
 			bool strict = false;
 
 		protected:
-			void set(const char *contents) override {
+
+			void updated(const Udjat::File::Watcher::Event, const char *) override {
 
 				try {
 
-					auto file = SysConfig::File();
-
-					file.set(contents);
+					SysConfig::File file{Udjat::File::Watcher::pathname};
 
 					Object::properties.label = file.getPath();
 					Object::properties.summary = file.getDescription();
@@ -209,7 +209,7 @@
 
 		public:
 
-			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(node), Udjat::File::Agent(Udjat::Attribute(node,"filename")) {
+			Inotify(const pugi::xml_node &node) : Udjat::Abstract::Agent(node), Udjat::File::Watcher(node,"filename") {
 
 				Object::properties.icon = "text-x-generic";
 
@@ -225,6 +225,7 @@
 				return this->value.get(value);
 			}
 
+			/*
 			std::shared_ptr<Abstract::Agent> find(const char *path, bool required, bool autoins) override {
 
 				std::shared_ptr<Abstract::Agent> rc = Abstract::Agent::find(path,false,false);
@@ -243,6 +244,7 @@
 
 				throw system_error(ENOENT,system_category(),string{"Can't find '"} + path + "' in '" + Udjat::File::Agent::c_str() + "'");
 			}
+			*/
 
 		};
 
