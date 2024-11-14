@@ -19,7 +19,7 @@
 
  #include <config.h>
  #include <udjat/agent.h>
- #include <udjat/tools/sysconfig.h>
+ #include <udjat/tools/system.h>
  #include <udjat/tools/file.h>
  #include <udjat/tools/file/watcher.h>
  #include <internals.h>
@@ -44,7 +44,7 @@
 		/// @brief Agent state.
 		class State : public Udjat::Abstract::State {
 		public:
-			State(const SysConfig::File &file) : Abstract::State("file",Level::unimportant,"") {
+			State(const System::Config::File &file) : Abstract::State("file",Level::unimportant,"") {
 				//set(file.getPath());
 			}
 
@@ -97,7 +97,7 @@
 
 				try {
 
-					auto file = SysConfig::File(filename.c_str());
+					auto file = System::Config::File(filename.c_str());
 
 					/*
 					Object::properties.label = file.getPath();
@@ -162,7 +162,7 @@
 		class Inotify : public Udjat::Abstract::Agent, public Udjat::File::Watcher {
 		private:
 			Quark key;
-			SysConfig::Value value;
+			System::Config::File::Value value;
 			bool strict = false;
 
 		protected:
@@ -171,7 +171,7 @@
 
 				try {
 
-					SysConfig::File file{Udjat::File::Watcher::pathname};
+					System::Config::File file{Udjat::File::Watcher::pathname};
 
 					Object::properties.label = file.getPath();
 					Object::properties.summary = file.getDescription();
